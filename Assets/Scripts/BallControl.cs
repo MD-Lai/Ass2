@@ -11,20 +11,37 @@ public class BallControl : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+
         Rigidbody body = GetComponent<Rigidbody>();
         Vector3 appliedVel = Vector3.zero;
+        Vector3 cameraRel = (this.transform.localPosition - Camera.main.transform.localPosition).normalized;
+
+        // all motions relative to camera
+        // forward
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) {
-            appliedVel.z += setSpeed;
+            appliedVel.z += cameraRel.z * setSpeed;
+            appliedVel.x += cameraRel.x * setSpeed;
         }
+
+        // back
         if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) {
-            appliedVel.z -= setSpeed;
+            appliedVel.z -= cameraRel.z * setSpeed;
+            appliedVel.x -= cameraRel.x * setSpeed;
         }
+
+        // right
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
-            appliedVel.x += setSpeed;
+            appliedVel.x += cameraRel.z * setSpeed;
+            appliedVel.z -= cameraRel.x * setSpeed;
         }
+
+        // left
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
-            appliedVel.x -= setSpeed;
+            appliedVel.x -= cameraRel.z * setSpeed;
+            appliedVel.z += cameraRel.x * setSpeed;
         }
+
+        // jump
         if (Input.GetKeyDown(KeyCode.Space)) {
             Vector3 vertVel = body.velocity;
             vertVel.y = 9.81f;

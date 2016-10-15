@@ -6,17 +6,20 @@ public class CameraControl : MonoBehaviour {
     public float rotateSpeed = 50;
     private GameObject mainball;
     private Vector3 offSet;
+    private Vector3 mainballPrev;
 	// Use this for initialization
 	void Start () {
         mainball = GameObject.Find("Sphere");
-        offSet = mainball.transform.localPosition - this.transform.localPosition;
+        offSet = this.transform.localPosition - mainball.transform.position;
+        Camera.main.transform.LookAt(mainball.transform.position);
 	}
 	
 	// Update is called once per frame
 	void Update () {
+
+        this.transform.localPosition += mainball.transform.localPosition - mainballPrev;
+
         float scrollAxis = Input.GetAxis("Mouse ScrollWheel");
-
-
         float currFOV = Camera.main.fieldOfView;
 
         if (scrollAxis < 0) {
@@ -28,10 +31,12 @@ public class CameraControl : MonoBehaviour {
 
         Camera.main.fieldOfView = currFOV;
 
-        this.transform.RotateAround(mainball.transform.localPosition, new Vector3(Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0), rotateSpeed * Time.deltaTime);
+        this.transform.RotateAround(mainball.transform.position, new Vector3(Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0), rotateSpeed * Time.deltaTime);
+
         Vector3 rotatedAngle = this.transform.localEulerAngles;
         rotatedAngle.z = 0;
         this.transform.localEulerAngles = rotatedAngle;
 
-	}
+        mainballPrev = mainball.transform.localPosition;
+    }
 }
