@@ -1,0 +1,78 @@
+Proposal
+********
+* Type *
+********
+A simple Maze-and-ball game 
+Mainly utilising the physics engine, the idea is to have a "board" which you have to tilt to control a ball.
+The goal will be to roll the ball from the starting point at one side of the board to the finish which will be placed at the other side of the board.
+A randomised version of depth-first-search (DFS) will be used to generate the maze.
+There will always be a solvable maze as the entire board is connected in some fashion. 
+
+ _________________________________________________________________
+ |         ___________            |   __________________________   |
+ |  Start |   _____   |  |  |  |  |  |   ____________________   |  |
+ |________|  |     |_____|  |  |_____|  |   _________________   |  |
+ |___________|  |___________|  |   _____|  |   ___________   |  |  |
+ |   ___________|   ___________|  |  ______|  |   ________|  |_____|
+ |  |   ___________|   ___________|___________|  |___________|     |
+ |  |  |   __         |   _________________   |_____   |     |  |  |
+ |  |  |  |  |  |  |  |  |   ______________|_____   |  |  |  |  |  |
+ |  |  |  |  |  |  |_____|  |   _____   |   __   |  |  |  |  |  |  |
+ |  |  |  |  |  |___________|  |     |  |  |  |  |  |  |  |  |  |  |
+ |  |  |  |  |_________________|  |  |  |  |  |  |  |  |  |  |  |  |
+ |  |  |  |  |   _________________|_____|  |  |  |  |  |  |  |  |  |
+ |  |  |  |  |  |   __    ______________|  |  |  |  |   __|  |  |  |
+ |  |  |  |  |  |  |  |  |   ________   |  |  |  |  |  |  |  |  |  |
+ |  |  |  |  |  |  |  |  |  |   _____   |  |  |  |  |  | ____|  |  |
+ |  |  |  |  |  |  |  |  |  |  |  ______|  |  |  |  |   ________|  |
+ |  |  |_____|  |  |  |  |  |  |_____   |  |  |  |  |  |           |
+ |  |_____   |  |__|  |  |  |________|  |  |  |  |__|  |  Finish   |
+ |___________|_______________________|________|________|___________|
+ 
+**********
+* Inputs *
+**********
+Using the accelerometer to get the tilt of the surface tablet, we will then translate that to the tilt of the board in game.
+Touch contros will be used to zoom/pan the camera around the board, but will always re-center around the ball on the absence of touch input.
+
+The keyboard/mouse equivalent for the controls would be to use w/a/s/d or the arrow keys to alter the tilt of the board, c to return to flat
+Mouse scroll will be to zoom, and holding left click while moving the mouse will be used to pan the camera, which will re-center on lifting left click.
+
+If time permits, the light sensor can be used to modify the effect of the ambient and/or direct light source in the game world.
+
+*****************
+* Visualisation *
+*****************
+The underlying board will be rendered as wood, using a wooden texture with the corresponding bump map to give it a more detailed look.
+The walls of the maze will also be rendered in a similar fashion as a rectangular prism.
+The ball will be rendered as a metallic ball bearing, and will incorporate reflections using a cubemap, and perhaps real time reflections if time permits.
+Ideally, real time shadows will be calculated and rendered, but that will be the first aspect to cut if time runs out. 
+Once complete, the box will be covered by a glass panel that will incorporate some form of refraction.
+
+Number of polygons will be the number of polygons for a sphere(unsure how many that is) + 2 for the board + 10 per wall(2 per face, ignoring the bottom face). 
+Since this will be in a grid based system, if we have a 20 by 20 grid box, and assuming that each grid has on average 2 walls,
+that gives us 20*20*10 + 2 + (circle amount) number of polygons, which gives an approximate estimate of >4000 polygons for the board itself, a relatively minimal amount by today's standards.
+
+Lastly, on completion of a maze, the board will rearrange in some manner to a create a new maze.
+
+**************
+* Milestones *
+**************
+- Key features
+* Using all the input detailed above to control a flat plane
+* Have a ball interact with the plane in the appropriate manner
+* Render a board with randomly placed walls with no texture
+* Properly implement DFS and have the walls placed accordingly
+* Textured and bump mapped rendering of the board and walls
+* Specular metallic rendering of the ball
+* Camera controls and ability to re-center on the ball
+* "Maze complete" state and create a new maze
+* Game UI
+
+- Sub-key features
+* Glass refraction and place a glass plane on top of the box
+* Cubemap reflection for ball
+* Reactive lighting (i.e. in game light proportional to light sensor)
+* Real time shadows 
+* Animated rearrangement of maze
+* Easter eggs and other ideas that pop up along the way
