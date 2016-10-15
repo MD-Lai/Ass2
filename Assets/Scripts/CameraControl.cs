@@ -5,19 +5,22 @@ public class CameraControl : MonoBehaviour {
     public float zoomSteps = 1;
     public float rotateSpeed = 50;
     public float mouseSensitivity = 2;
-    private GameObject mainball;
+    private Transform mainball;
     private Vector3 offSet;
     private Vector3 mainballPrev;
 	// Use this for initialization
 	void Start () {
-        mainball = GameObject.Find("Sphere");
-        Camera.main.transform.LookAt(mainball.transform.position);
-        offSet = this.transform.localPosition - mainball.transform.position;
+        mainball = GameObject.Find("Sphere").transform;
+        Camera.main.transform.LookAt(mainball.position);
     }
 	
 	// Update is called once per frame
 	void Update () {
 
+    }
+
+    void LateUpdate() {
+        
         this.transform.localPosition += mainball.transform.localPosition - mainballPrev;
 
         float scrollAxis = Input.GetAxis("Mouse ScrollWheel");
@@ -32,14 +35,7 @@ public class CameraControl : MonoBehaviour {
 
         Camera.main.fieldOfView = currFOV;
 
-        this.transform.RotateAround(mainball.transform.position, new Vector3(Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0), rotateSpeed * mouseSensitivity * Time.deltaTime);
-
-        if(this.transform.localPosition.y <=  0) {
-            Vector3 manipulator = this.transform.localPosition;
-            manipulator.y = 0;
-            this.transform.localPosition = manipulator;
-            Camera.main.transform.LookAt(mainball.transform.position);
-        }
+        this.transform.RotateAround(mainball.position, new Vector3(Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0), rotateSpeed * mouseSensitivity * Time.deltaTime);
 
         Vector3 rotatedAngle = this.transform.localEulerAngles;
         rotatedAngle.z = 0;

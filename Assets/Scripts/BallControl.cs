@@ -4,6 +4,7 @@ using System.Collections;
 public class BallControl : MonoBehaviour {
     public float setSpeed = 1;
     private Vector3 origPos;
+    private BoardGenerator board;
 	// Use this for initialization
 	void Start () {
         origPos = this.transform.localPosition;
