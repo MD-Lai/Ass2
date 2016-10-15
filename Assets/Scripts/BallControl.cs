@@ -14,7 +14,9 @@ public class BallControl : MonoBehaviour {
 
         Rigidbody body = GetComponent<Rigidbody>();
         Vector3 appliedVel = Vector3.zero;
-        Vector3 cameraRel = (this.transform.localPosition - Camera.main.transform.localPosition).normalized;
+        Vector3 ballXY = new Vector3(this.transform.localPosition.x, 0, this.transform.localPosition.z);
+        Vector3 camXY = new Vector3(Camera.main.transform.localPosition.x, 0, Camera.main.transform.localPosition.z);
+        Vector3 cameraRel = (ballXY - camXY).normalized;
 
         // all motions relative to camera
         // forward
