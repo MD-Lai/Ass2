@@ -20,6 +20,10 @@ public class CameraControl : MonoBehaviour {
     }
 
     void LateUpdate() {
+
+        if (Input.GetKeyDown(KeyCode.C)) {
+            this.transform.localPosition = new Vector3(mainball.localPosition.x, this.transform.localPosition.y, mainball.localPosition.z);
+        }
         
         this.transform.localPosition += mainball.transform.localPosition - mainballPrev;
 
@@ -27,7 +31,7 @@ public class CameraControl : MonoBehaviour {
         float currFOV = Camera.main.fieldOfView;
 
         if (scrollAxis < 0) {
-            currFOV = (currFOV + zoomSteps) > 175 ? 175 : currFOV + zoomSteps;
+            currFOV = (currFOV + zoomSteps) > 150 ? 150 : currFOV + zoomSteps;
         }
         if(scrollAxis > 0) {
             currFOV = (currFOV - zoomSteps) < 5 ? 5 : currFOV - zoomSteps;
@@ -35,11 +39,12 @@ public class CameraControl : MonoBehaviour {
 
         Camera.main.fieldOfView = currFOV;
 
-        this.transform.RotateAround(mainball.position, new Vector3(Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0), rotateSpeed * mouseSensitivity * Time.deltaTime);
+        this.transform.Translate(new Vector3(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"), 0) * Time.deltaTime * mouseSensitivity);
+        //this.transform.RotateAround(mainball.position, new Vector3(Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0), rotateSpeed * mouseSensitivity * Time.deltaTime);
 
-        Vector3 rotatedAngle = this.transform.localEulerAngles;
-        rotatedAngle.z = 0;
-        this.transform.localEulerAngles = rotatedAngle;
+        //Vector3 rotatedAngle = this.transform.localEulerAngles;
+        //rotatedAngle.z = 0;
+        //this.transform.localEulerAngles = rotatedAngle;
 
         mainballPrev = mainball.transform.localPosition;
     }

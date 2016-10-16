@@ -2,11 +2,14 @@
 using System.Collections;
 
 public class BoardGenerator : MonoBehaviour {
+    private int TILERIGHT = 0;
+    private int TILEDOWN = 1;
+    private int TILEVISITED = 2;
     private int UP = 0;
     private int RIGHT = 1;
     private int DOWN = 2;
     private int LEFT = 3;
-    private int VISITED = 4;
+    
 
     private int nVisited = 0;
 
@@ -24,14 +27,13 @@ public class BoardGenerator : MonoBehaviour {
         wallPrefab = (GameObject)Resources.Load("prefabs/Wall", typeof(GameObject));
         floorPrefab = (GameObject)Resources.Load("prefabs/Floor", typeof(GameObject));
 
-        if (boardSizeX % 2 != 0) boardSizeX -= 1;
-        if (boardSizeZ % 2 != 0) boardSizeZ -= 1;
+        placeFloor(boardSizeX, boardSizeZ);
 
         dfsMaze(boardSizeX, boardSizeZ);
-
+        
         placePins(boardSizeX, boardSizeZ);
         placeWalls(boardSizeX, boardSizeZ);
-        //placeFloor(boardSizeX, boardSizeZ);
+        
 
         
     }
@@ -57,16 +59,16 @@ public class BoardGenerator : MonoBehaviour {
         }
     }
 
-    /*
+    
     void placeFloor(int boardX, int boardZ) {
         for(int x = 0; x < boardX; x++) {
             for (int z = 0; z < boardZ; z++) {
                 GameObject floor = GameObject.Instantiate<GameObject>(floorPrefab);
-                floor.transform.localPosition = new Vector3(x * 2 - 2, -0.25f, -z * 2 + 2);
+                floor.transform.localPosition = new Vector3(x * 2, -0.25f, -z * 2);
             }
         }
     }
-    */
+    
     void placeWalls(int boardX, int boardZ) {
         // horizontal walls
         // top wall
@@ -78,10 +80,9 @@ public class BoardGenerator : MonoBehaviour {
         // rest of horizontal walls
         for(int x = 0; x < boardX; x ++) {
             for (int z = 0; z < boardZ; z ++) {
-                //Debug.Log(x + " " + z);
+                //UnityEngine.Debug.Log(x + " " + z);
                 //place walls in appropriate locations...
-                //Debug.Log("placing " + x + " " + z);
-                if (wallArray[x,z][DOWN] == true) {
+                if (wallArray[x,z][TILEDOWN] == true) {
                     GameObject wall = GameObject.Instantiate<GameObject>(wallPrefab);
                     wall.transform.localPosition = new Vector3(x*2, 0.75f, -2*z-1);
                 }
@@ -99,7 +100,7 @@ public class BoardGenerator : MonoBehaviour {
         for (int x = 0; x < boardX; x ++) {
             for (int z = 0; z < boardZ; z++) {
                 //place walls in appropriate locations
-                if (wallArray[x, z][RIGHT] == true) { 
+                if (wallArray[x, z][TILERIGHT] == true) { 
                     GameObject wall = GameObject.Instantiate<GameObject>(wallPrefab);
                     wall.transform.localPosition = new Vector3(2*x + 1, 0.75f, -z * 2);
                     wall.transform.Rotate(new Vector3(0, 90, 0));
@@ -111,7 +112,6 @@ public class BoardGenerator : MonoBehaviour {
     
     void dfsMaze(int boardX, int boardZ) {
         wallArray = new bool[boardX, boardZ] [];
-        Debug.Log(wallArray.Length);
 
         clearMaze(boardX, boardZ);
 
@@ -121,9 +121,7 @@ public class BoardGenerator : MonoBehaviour {
 
     void explore(int x, int y, int boardX, int boardZ) {
 
-        wallArray[x, y][VISITED] = true;
-
-        Debug.Log("boardX " + boardX + " boardZ " + boardZ);
+        wallArray[x, y][TILEVISITED] = true;
 
         if (nVisited <= boardX * boardZ) {
             int[] nextVisits = new int[4] { -1, -1, -1, -1 };
@@ -137,45 +135,33 @@ public class BoardGenerator : MonoBehaviour {
                 } while (nbrInIntArray(nextVisits, nbr));
                 
                 nextVisits[i] = nbr;
-                
-                //nextVisits[i] = i;
-
-
             }
 
             for (int i = 0; i < nextVisits.Length; i++) {
 
-                if (y > 0 && nextVisits[i] == UP && wallArray[x, y - 1][VISITED] == false) {
-                    wallArray[x, y - 1][DOWN] = false;
-                    wallArray[x, y][UP] = false;
-                    Debug.Log(nVisited + "visiting " + x + " " + (y - 1));
+                if (y > 0 && nextVisits[i] == UP && wallArray[x, y - 1][TILEVISITED] == false) {
+                    wallArray[x, y - 1][TILEDOWN] = false;
                     nVisited++;
                     explore(x, y - 1, boardX, boardZ);
                     
                 }
+                
 
-                if (y < boardZ-1 && nextVisits[i] == DOWN && wallArray[x, y + 1][VISITED] == false) {
-                    wallArray[x, y + 1][UP] = false;
-                    wallArray[x, y][DOWN] = false;
-                    Debug.Log(nVisited + "visiting " + x + " " + (y + 1));
+                if (y < boardZ-1 && nextVisits[i] == DOWN && wallArray[x, y + 1][TILEVISITED] == false) {
+                    wallArray[x, y][TILEDOWN] = false;
                     nVisited++;
                     explore(x, y + 1, boardX, boardZ);
                     
                 }
-
-                if (x > 0 && nextVisits[i] == LEFT && wallArray[x - 1, y][VISITED] == false) {
-                    wallArray[x - 1, y][RIGHT] = false;
-                    wallArray[x, y][LEFT] = false;
-                    Debug.Log(nVisited + "visiting " + (x - 1) + " " + y);
+                
+                if (x > 0 && nextVisits[i] == LEFT && wallArray[x - 1, y][TILEVISITED] == false) {
+                    wallArray[x - 1, y][TILERIGHT] = false;
                     nVisited++;
                     explore(x - 1, y, boardX, boardZ);
-
                 }
 
-                if (x < boardX-1 && nextVisits[i] == RIGHT && wallArray[x + 1, y][VISITED] == false) {
-                    wallArray[x + 1, y][LEFT] = false;
-                    wallArray[x, y][RIGHT] = false;
-                    Debug.Log(nVisited + " visiting " + (x + 1) + " " + y);
+                if (x < boardX-1 && nextVisits[i] == RIGHT && wallArray[x + 1, y][TILEVISITED] == false) {
+                    wallArray[x, y][TILERIGHT] = false;
                     nVisited++;
                     explore(x + 1, y, boardX, boardZ);
                 }
@@ -187,7 +173,7 @@ public class BoardGenerator : MonoBehaviour {
         for (int i = 0; i < boardX; i++) {
             for (int j = 0; j < boardZ; j++) {
                 // true if a wall should be present
-                wallArray[i, j] = new bool[] { true, true, true, true, false };
+                wallArray[i, j] = new bool[] { true, true, false };
             }
         }
         nVisited = 0;
