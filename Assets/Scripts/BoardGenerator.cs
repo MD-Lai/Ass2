@@ -10,29 +10,40 @@ public class BoardGenerator : MonoBehaviour {
     private int DOWN = 2;
     private int LEFT = 3;
     
-
     private int nVisited = 0;
 
     private GameObject pinPrefab;
     private GameObject wallPrefab;
     private GameObject floorPrefab;
+
+    private ArrayList pins = new ArrayList();
+    private ArrayList walls = new ArrayList();
+    private ArrayList floors = new ArrayList();
+    
     public int boardSizeX = 10;
     public int boardSizeZ = 10;
     public bool[,][] wallArray;
-    Random rnd = new Random();
+
+    private GameObject ball;
+    public BallControl ballInfo;
+    private Vector3 ballPos;
+    private int score = 0;
+    private bool complete = false;
 
     // Use this for initialization
     void Start() {
         pinPrefab = (GameObject)Resources.Load("prefabs/Pin", typeof(GameObject));
         wallPrefab = (GameObject)Resources.Load("prefabs/Wall", typeof(GameObject));
         floorPrefab = (GameObject)Resources.Load("prefabs/Floor", typeof(GameObject));
+        ball = GameObject.Find("MainBall");
+        ballPos = ball.transform.localPosition;
 
-        placeFloor(boardSizeX, boardSizeZ);
+        wallArray = new bool[boardSizeX, boardSizeZ][];
 
-        dfsMaze(boardSizeX, boardSizeZ);
         
-        placePins(boardSizeX, boardSizeZ);
-        placeWalls(boardSizeX, boardSizeZ);
+
+        generateMaze(boardSizeX, boardSizeZ);
+        
         
 
         
@@ -40,13 +51,38 @@ public class BoardGenerator : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKeyDown(KeyCode.R)) {
-            dfsMaze(boardSizeX, boardSizeZ);
-            placePins(boardSizeX, boardSizeZ);
-            placeWalls(boardSizeX, boardSizeZ);
+        
+        if (completedMaze() || Input.GetKeyDown(KeyCode.R)) {
+            if (complete) {
+                ballInfo.respawn();
+                score++;
+            }
+
+            generateMaze(boardSizeX, boardSizeZ);
+
         }
     }
 
+    bool completedMaze() {
+        ballPos = ball.transform.localPosition;
+        if (ballPos.x > boardSizeX * 2 - 2 && ballPos.z < -boardSizeZ * 2 + 2) {
+            complete = true;
+            return true;
+        }
+        else {
+            complete = false;
+            return false;
+        }
+    }
+
+    void generateMaze(int boardX, int boardZ) {
+        dfsMaze(boardX, boardZ);
+
+        placeFloor(boardX, boardZ);
+        placePins(boardX, boardZ);
+        placeWalls(boardX, boardZ);
+
+    }
     // places pins based on size of board in number of squares desired
     // pins have to be at least 
     void placePins(int boardX, int boardZ) {
@@ -55,6 +91,7 @@ public class BoardGenerator : MonoBehaviour {
             for (int z = 0;  z <= boardZ; z ++) {
                 GameObject pin = GameObject.Instantiate<GameObject>(pinPrefab);
                 pin.transform.localPosition = new Vector3(x * 2 - 1, 0.75f, -z * 2 + 1);
+                pins.Add(pin);
             }
         }
     }
@@ -65,6 +102,7 @@ public class BoardGenerator : MonoBehaviour {
             for (int z = 0; z < boardZ; z++) {
                 GameObject floor = GameObject.Instantiate<GameObject>(floorPrefab);
                 floor.transform.localPosition = new Vector3(x * 2, -0.25f, -z * 2);
+                floors.Add(floor);
             }
         }
     }
@@ -75,6 +113,7 @@ public class BoardGenerator : MonoBehaviour {
         for(int x = 0; x < boardX; x++) {
             GameObject wall = GameObject.Instantiate<GameObject>(wallPrefab);
             wall.transform.localPosition = new Vector3(x * 2, 0.75f, 0.5f * 2);
+            walls.Add(wall);
         }
 
         // rest of horizontal walls
@@ -85,6 +124,7 @@ public class BoardGenerator : MonoBehaviour {
                 if (wallArray[x,z][TILEDOWN] == true) {
                     GameObject wall = GameObject.Instantiate<GameObject>(wallPrefab);
                     wall.transform.localPosition = new Vector3(x*2, 0.75f, -2*z-1);
+                    walls.Add(wall);
                 }
             }
         }
@@ -95,6 +135,7 @@ public class BoardGenerator : MonoBehaviour {
             GameObject wall = GameObject.Instantiate<GameObject>(wallPrefab);
             wall.transform.localPosition = new Vector3(-0.5f * 2, 0.75f, -z * 2);
             wall.transform.Rotate(new Vector3(0, 90, 0));
+            walls.Add(wall);
         }
         // rest of vertical walls
         for (int x = 0; x < boardX; x ++) {
@@ -104,6 +145,7 @@ public class BoardGenerator : MonoBehaviour {
                     GameObject wall = GameObject.Instantiate<GameObject>(wallPrefab);
                     wall.transform.localPosition = new Vector3(2*x + 1, 0.75f, -z * 2);
                     wall.transform.Rotate(new Vector3(0, 90, 0));
+                    walls.Add(wall);
                 }
             }
         }
@@ -111,7 +153,7 @@ public class BoardGenerator : MonoBehaviour {
 
     
     void dfsMaze(int boardX, int boardZ) {
-        wallArray = new bool[boardX, boardZ] [];
+        
 
         clearMaze(boardX, boardZ);
 
@@ -129,12 +171,13 @@ public class BoardGenerator : MonoBehaviour {
             // make random order of adjacent squares to visit 
             // (UP, DOWN, LEFT, RIGHT) as defined above
             for (int i = 0; i < nextVisits.Length; i++) {
-                
+
                 do {
                     nbr = Random.Range(0, nextVisits.Length);
                 } while (nbrInIntArray(nextVisits, nbr));
                 
                 nextVisits[i] = nbr;
+                
             }
 
             for (int i = 0; i < nextVisits.Length; i++) {
@@ -176,6 +219,19 @@ public class BoardGenerator : MonoBehaviour {
                 wallArray[i, j] = new bool[] { true, true, false };
             }
         }
+
+        foreach (GameObject wall in walls) {
+            Destroy(wall);
+        }
+
+        foreach(GameObject pin in pins) {
+            Destroy(pin);
+        }
+
+        foreach(GameObject floor in floors) {
+            Destroy(floor);
+        }
+        
         nVisited = 0;
     }
 
@@ -189,6 +245,12 @@ public class BoardGenerator : MonoBehaviour {
         return false;
 
     }
-    
 
+    public int getBoardX() {
+        return boardSizeX;
+    }
+
+    public int getBoardZ() {
+        return boardSizeZ;
+    }
 }

@@ -4,16 +4,18 @@ using System.Collections;
 public class BallControl : MonoBehaviour {
     public float setSpeed = 1;
     private Vector3 origPos;
-    private BoardGenerator board;
-	// Use this for initialization
-	void Start () {
+    public BoardGenerator board;
+    private Rigidbody body;
+    // Use this for initialization
+    void Start () {
         origPos = this.transform.localPosition;
-	}
+        body = GetComponent<Rigidbody>();
+    }
 
     // Update is called once per frame
     void Update() {
 
-        Rigidbody body = GetComponent<Rigidbody>();
+        
         Vector3 appliedVel = Vector3.zero;
         //Vector3 ballXY = new Vector3(this.transform.localPosition.x, 0, this.transform.localPosition.z);
         //Vector3 camXY = new Vector3(Camera.main.transform.localPosition.x, 0, Camera.main.transform.localPosition.z);
@@ -67,9 +69,13 @@ public class BallControl : MonoBehaviour {
         //Debug.Log(body.velocity.magnitude);
 
         if (Input.GetKeyDown(KeyCode.R)) {
-            this.transform.localPosition = origPos;
-            body.velocity = Vector3.zero;
+            respawn();
         }
+        
     }
 
+    public void respawn() {
+        this.transform.localPosition = origPos;
+        body.velocity = Vector3.zero;
+    }
 }

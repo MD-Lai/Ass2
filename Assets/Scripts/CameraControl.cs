@@ -8,10 +8,12 @@ public class CameraControl : MonoBehaviour {
     private Transform mainball;
     private Vector3 offSet;
     private Vector3 mainballPrev;
+    private Vector3 startPos;
 	// Use this for initialization
 	void Start () {
-        mainball = GameObject.Find("Sphere").transform;
+        mainball = GameObject.Find("MainBall").transform;
         Camera.main.transform.LookAt(mainball.position);
+        startPos = this.transform.localPosition;
     }
 	
 	// Update is called once per frame
@@ -21,11 +23,16 @@ public class CameraControl : MonoBehaviour {
 
     void LateUpdate() {
 
+
         if (Input.GetKeyDown(KeyCode.C)) {
             this.transform.localPosition = new Vector3(mainball.localPosition.x, this.transform.localPosition.y, mainball.localPosition.z);
         }
         
         this.transform.localPosition += mainball.transform.localPosition - mainballPrev;
+
+        Vector3 constantH = new Vector3(this.transform.localPosition.x, startPos.y, this.transform.localPosition.z);
+
+        this.transform.localPosition = constantH;
 
         float scrollAxis = Input.GetAxis("Mouse ScrollWheel");
         float currFOV = Camera.main.fieldOfView;
