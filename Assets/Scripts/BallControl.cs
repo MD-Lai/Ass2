@@ -9,6 +9,8 @@ public class BallControl : MonoBehaviour {
     private Vector3 origPos;
     public BoardGenerator board;
     private Rigidbody body;
+
+    private int score = 0;
     
 
     // Use this for initialization
@@ -83,6 +85,7 @@ public class BallControl : MonoBehaviour {
         //Debug.Log(body.velocity.magnitude);
 
         if (Input.GetKeyDown(KeyCode.R) || this.transform.localPosition.y <= -25) {
+            score--;
             respawn();
         }
         
@@ -91,5 +94,14 @@ public class BallControl : MonoBehaviour {
     public void respawn() {
         this.transform.localPosition = origPos;
         body.velocity = Vector3.zero;
+        
+    }
+
+    public void addScore(int toAdd) {
+        score += toAdd;
+    }
+
+    public int getScore() {
+        return score;
     }
 }

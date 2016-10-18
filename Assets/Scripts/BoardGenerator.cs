@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class BoardGenerator : MonoBehaviour {
@@ -17,10 +18,11 @@ public class BoardGenerator : MonoBehaviour {
     private GameObject floorPrefab;
 
     private ArrayList components = new ArrayList();
-    
-    public int boardSizeX = 10;
-    public int boardSizeZ = 10;
-    public float noSpawnRate = 0.08f;
+
+    public Text countText;
+    public int boardSizeX = 5;
+    public int boardSizeZ = 5;
+    public float noSpawnRate = 0.0f;
     public BallControl ballInfo;
     public Shader shader;
     public PointLight pointLight;
@@ -30,7 +32,6 @@ public class BoardGenerator : MonoBehaviour {
 
     private bool[,][] wallArray;
     private Vector3 ballPos;
-    private int score = 0;
     private bool complete = false;
 
     // Use this for initialization
@@ -43,12 +44,8 @@ public class BoardGenerator : MonoBehaviour {
 
         wallArray = new bool[boardSizeX, boardSizeZ][];
 
-        
-
+        updateScore();
         generateMaze(boardSizeX, boardSizeZ);
-        
-        
-
         
     }
 	
@@ -58,12 +55,15 @@ public class BoardGenerator : MonoBehaviour {
         if (completedMaze() || Input.GetKeyDown(KeyCode.R)) {
             if (complete) {
                 ballInfo.respawn();
-                score++;
+                ballInfo.addScore((boardSizeX+boardSizeZ)/2);
+                boardSizeX++;
+                boardSizeZ++;
             }
-
+            
             generateMaze(boardSizeX, boardSizeZ);
 
         }
+        updateScore();
 
         foreach (GameObject component in components) {
             MeshRenderer componentRenderer = component.gameObject.GetComponent<MeshRenderer>();
@@ -72,6 +72,10 @@ public class BoardGenerator : MonoBehaviour {
             componentRenderer.material.SetColor("_PointLightColor", this.pointLight.color);
             componentRenderer.material.SetVector("_PointLightPosition", this.pointLight.GetWorldPosition());
         }
+    }
+
+    void updateScore() {
+        countText.text = "Score: " + ballInfo.getScore().ToString();
     }
 
     bool completedMaze() {

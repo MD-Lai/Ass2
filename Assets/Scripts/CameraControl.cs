@@ -52,7 +52,7 @@ public class CameraControl : MonoBehaviour {
 
         Camera.main.fieldOfView = currFOV;
 
-        this.transform.Translate(new Vector3(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"), 0) * Time.deltaTime * mouseSensitivity);
+        this.transform.Translate(new Vector3(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"), 0) * Time.deltaTime * mouseSensitivity * currFOV / 6);
         //this.transform.RotateAround(mainball.position, new Vector3(Input.GetAxis("Mouse Y"), Input.GetAxis("Mouse X"), 0), rotateSpeed * mouseSensitivity * Time.deltaTime);
 
         //Vector3 rotatedAngle = this.transform.localEulerAngles;
