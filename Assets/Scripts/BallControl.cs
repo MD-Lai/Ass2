@@ -61,14 +61,14 @@ public class BallControl : MonoBehaviour {
         // jump
         if (Input.GetKeyDown(KeyCode.Space)) {
             Vector3 vertVel = body.velocity;
-            vertVel.y = 9.81f;
+            vertVel.y = 5.0f;
             body.velocity = vertVel;
         }
         
         body.velocity += appliedVel * Time.deltaTime;
         //Debug.Log(body.velocity.magnitude);
 
-        if (Input.GetKeyDown(KeyCode.R)) {
+        if (Input.GetKeyDown(KeyCode.R) || this.transform.localPosition.y <= -25) {
             respawn();
         }
         

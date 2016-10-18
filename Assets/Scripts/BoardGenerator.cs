@@ -22,7 +22,8 @@ public class BoardGenerator : MonoBehaviour {
     
     public int boardSizeX = 10;
     public int boardSizeZ = 10;
-    public bool[,][] wallArray;
+    public float noSpawnRate = 0.08f;
+    private bool[,][] wallArray;
 
     private GameObject ball;
     public BallControl ballInfo;
@@ -100,9 +101,11 @@ public class BoardGenerator : MonoBehaviour {
     void placeFloor(int boardX, int boardZ) {
         for(int x = 0; x < boardX; x++) {
             for (int z = 0; z < boardZ; z++) {
-                GameObject floor = GameObject.Instantiate<GameObject>(floorPrefab);
-                floor.transform.localPosition = new Vector3(x * 2, -0.25f, -z * 2);
-                floors.Add(floor);
+                if (Random.value < (1-noSpawnRate) || x+z == 0) {
+                    GameObject floor = GameObject.Instantiate<GameObject>(floorPrefab);
+                    floor.transform.localPosition = new Vector3(x * 2, -0.25f, -z * 2);
+                    floors.Add(floor);
+                }
             }
         }
     }
