@@ -5,15 +5,19 @@ public class CameraControl : MonoBehaviour {
     public float zoomSteps = 1;
     public float rotateSpeed = 50;
     public float mouseSensitivity = 2;
+    
     private Transform mainball;
+    
     private Vector3 offSet;
     private Vector3 mainballPrev;
     private Vector3 startPos;
 	// Use this for initialization
 	void Start () {
         mainball = GameObject.Find("MainBall").transform;
+       
         Camera.main.transform.LookAt(mainball.position);
         startPos = this.transform.localPosition;
+        
     }
 	
 	// Update is called once per frame
@@ -43,6 +47,8 @@ public class CameraControl : MonoBehaviour {
         if(scrollAxis > 0) {
             currFOV = (currFOV - zoomSteps) < 5 ? 5 : currFOV - zoomSteps;
         }
+
+        
 
         Camera.main.fieldOfView = currFOV;
 

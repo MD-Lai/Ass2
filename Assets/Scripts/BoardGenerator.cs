@@ -16,17 +16,19 @@ public class BoardGenerator : MonoBehaviour {
     private GameObject wallPrefab;
     private GameObject floorPrefab;
 
-    private ArrayList pins = new ArrayList();
-    private ArrayList walls = new ArrayList();
-    private ArrayList floors = new ArrayList();
+    private ArrayList components = new ArrayList();
     
     public int boardSizeX = 10;
     public int boardSizeZ = 10;
     public float noSpawnRate = 0.08f;
-    private bool[,][] wallArray;
+    public BallControl ballInfo;
+    public Shader shader;
+    public PointLight pointLight;
+    
 
     private GameObject ball;
-    public BallControl ballInfo;
+
+    private bool[,][] wallArray;
     private Vector3 ballPos;
     private int score = 0;
     private bool complete = false;
@@ -52,7 +54,7 @@ public class BoardGenerator : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        
+
         if (completedMaze() || Input.GetKeyDown(KeyCode.R)) {
             if (complete) {
                 ballInfo.respawn();
@@ -61,6 +63,14 @@ public class BoardGenerator : MonoBehaviour {
 
             generateMaze(boardSizeX, boardSizeZ);
 
+        }
+
+        foreach (GameObject component in components) {
+            MeshRenderer componentRenderer = component.gameObject.GetComponent<MeshRenderer>();
+
+            // Pass updated light positions to shader
+            componentRenderer.material.SetColor("_PointLightColor", this.pointLight.color);
+            componentRenderer.material.SetVector("_PointLightPosition", this.pointLight.GetWorldPosition());
         }
     }
 
@@ -92,7 +102,8 @@ public class BoardGenerator : MonoBehaviour {
             for (int z = 0;  z <= boardZ; z ++) {
                 GameObject pin = GameObject.Instantiate<GameObject>(pinPrefab);
                 pin.transform.localPosition = new Vector3(x * 2 - 1, 0.75f, -z * 2 + 1);
-                pins.Add(pin);
+                
+                components.Add(pin);
             }
         }
     }
@@ -104,7 +115,8 @@ public class BoardGenerator : MonoBehaviour {
                 if (Random.value < (1-noSpawnRate) || x+z == 0) {
                     GameObject floor = GameObject.Instantiate<GameObject>(floorPrefab);
                     floor.transform.localPosition = new Vector3(x * 2, -0.25f, -z * 2);
-                    floors.Add(floor);
+
+                    components.Add(floor);
                 }
             }
         }
@@ -116,7 +128,8 @@ public class BoardGenerator : MonoBehaviour {
         for(int x = 0; x < boardX; x++) {
             GameObject wall = GameObject.Instantiate<GameObject>(wallPrefab);
             wall.transform.localPosition = new Vector3(x * 2, 0.75f, 0.5f * 2);
-            walls.Add(wall);
+
+            components.Add(wall);
         }
 
         // rest of horizontal walls
@@ -127,7 +140,8 @@ public class BoardGenerator : MonoBehaviour {
                 if (wallArray[x,z][TILEDOWN] == true) {
                     GameObject wall = GameObject.Instantiate<GameObject>(wallPrefab);
                     wall.transform.localPosition = new Vector3(x*2, 0.75f, -2*z-1);
-                    walls.Add(wall);
+
+                    components.Add(wall);
                 }
             }
         }
@@ -138,7 +152,8 @@ public class BoardGenerator : MonoBehaviour {
             GameObject wall = GameObject.Instantiate<GameObject>(wallPrefab);
             wall.transform.localPosition = new Vector3(-0.5f * 2, 0.75f, -z * 2);
             wall.transform.Rotate(new Vector3(0, 90, 0));
-            walls.Add(wall);
+
+            components.Add(wall);
         }
         // rest of vertical walls
         for (int x = 0; x < boardX; x ++) {
@@ -148,7 +163,8 @@ public class BoardGenerator : MonoBehaviour {
                     GameObject wall = GameObject.Instantiate<GameObject>(wallPrefab);
                     wall.transform.localPosition = new Vector3(2*x + 1, 0.75f, -z * 2);
                     wall.transform.Rotate(new Vector3(0, 90, 0));
-                    walls.Add(wall);
+
+                    components.Add(wall);
                 }
             }
         }
@@ -156,10 +172,10 @@ public class BoardGenerator : MonoBehaviour {
 
     
     void dfsMaze(int boardX, int boardZ) {
-        
 
+        wallArray = new bool[boardSizeX, boardSizeZ][];
         clearMaze(boardX, boardZ);
-
+        
         explore(0, 0, boardX,boardZ);
 
     }
@@ -223,17 +239,10 @@ public class BoardGenerator : MonoBehaviour {
             }
         }
 
-        foreach (GameObject wall in walls) {
-            Destroy(wall);
+        foreach (GameObject component in components) {
+            Destroy(component);
         }
-
-        foreach(GameObject pin in pins) {
-            Destroy(pin);
-        }
-
-        foreach(GameObject floor in floors) {
-            Destroy(floor);
-        }
+        components = new ArrayList();
         
         nVisited = 0;
     }

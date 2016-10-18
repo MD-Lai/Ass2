@@ -3,19 +3,33 @@ using System.Collections;
 
 public class BallControl : MonoBehaviour {
     public float setSpeed = 1;
+    public Shader shader;
+    public PointLight pointLight;
+
     private Vector3 origPos;
     public BoardGenerator board;
     private Rigidbody body;
+    
+
     // Use this for initialization
     void Start () {
         origPos = this.transform.localPosition;
         body = GetComponent<Rigidbody>();
+        MeshRenderer renderer = this.gameObject.GetComponent<MeshRenderer>();
+        renderer.material.shader = shader;
     }
 
     // Update is called once per frame
     void Update() {
 
-        
+        // Get renderer component (in order to pass params to shader)
+        MeshRenderer renderer = this.gameObject.GetComponent<MeshRenderer>();
+
+        // Pass updated light positions to shader
+        renderer.material.SetColor("_PointLightColor", this.pointLight.color);
+        renderer.material.SetVector("_PointLightPosition", this.pointLight.GetWorldPosition());
+
+
         Vector3 appliedVel = Vector3.zero;
         //Vector3 ballXY = new Vector3(this.transform.localPosition.x, 0, this.transform.localPosition.z);
         //Vector3 camXY = new Vector3(Camera.main.transform.localPosition.x, 0, Camera.main.transform.localPosition.z);
