@@ -20,12 +20,15 @@ public class BoardGenerator : MonoBehaviour {
     private ArrayList components = new ArrayList();
 
     public Text countText;
-    public int boardSizeX = 5;
-    public int boardSizeZ = 5;
+    public int aspectX = 1;
+    public int aspectZ = 1;
+    private int boardSizeX;
+    private int boardSizeZ;
     public float noSpawnRate = 0.0f;
     public BallControl ballInfo;
     public Shader shader;
     public PointLight pointLight;
+    public Settings settings;
     
 
     private GameObject ball;
@@ -39,13 +42,16 @@ public class BoardGenerator : MonoBehaviour {
         pinPrefab = (GameObject)Resources.Load("prefabs/Pin", typeof(GameObject));
         wallPrefab = (GameObject)Resources.Load("prefabs/Wall", typeof(GameObject));
         floorPrefab = (GameObject)Resources.Load("prefabs/Floor", typeof(GameObject));
+        
         ball = GameObject.Find("MainBall");
         ballPos = ball.transform.localPosition;
 
         wallArray = new bool[boardSizeX, boardSizeZ][];
-
+        boardSizeX = aspectX;
+        boardSizeZ = aspectZ;
         updateScore();
         generateMaze(boardSizeX, boardSizeZ);
+        
         
     }
 	
@@ -56,8 +62,8 @@ public class BoardGenerator : MonoBehaviour {
             if (complete) {
                 ballInfo.respawn();
                 ballInfo.addScore((boardSizeX+boardSizeZ)/2);
-                boardSizeX++;
-                boardSizeZ++;
+                boardSizeX += aspectX;
+                boardSizeZ += aspectZ;
             }
             
             generateMaze(boardSizeX, boardSizeZ);
@@ -74,6 +80,9 @@ public class BoardGenerator : MonoBehaviour {
         }
     }
 
+    public void setXAspect(int setX) {
+        boardSizeX = setX;
+    }
     void updateScore() {
         countText.text = "Score: " + ballInfo.getScore().ToString();
     }
