@@ -28,7 +28,6 @@ public class BoardGenerator : MonoBehaviour {
     public BallControl ballInfo;
     public Shader shader;
     public PointLight pointLight;
-    public Settings settings;
     
 
     private GameObject ball;
@@ -46,9 +45,12 @@ public class BoardGenerator : MonoBehaviour {
         ball = GameObject.Find("MainBall");
         ballPos = ball.transform.localPosition;
 
+        
+        boardSizeX = Settings.xAspect;
+        boardSizeZ = Settings.zAspect;
+        aspectX = Settings.xAspect;
+        aspectZ = Settings.zAspect;
         wallArray = new bool[boardSizeX, boardSizeZ][];
-        boardSizeX = aspectX;
-        boardSizeZ = aspectZ;
         updateScore();
         generateMaze(boardSizeX, boardSizeZ);
         
