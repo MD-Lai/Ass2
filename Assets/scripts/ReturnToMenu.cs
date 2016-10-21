@@ -2,16 +2,11 @@
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class LoadOnClick : MonoBehaviour {
+public class ReturnToMenu : MonoBehaviour {
 
-	public void LoadScene() 
-    {
-        SceneManager.LoadScene("MainScene");
+    public void BackToMenu() {
+        SceneManager.LoadScene("MainMenu");
         GameObject settings = GameObject.Find("Persistent Settings");
         DontDestroyOnLoad(settings);
-    }
-
-    public void QuitGame() {
-        Application.Quit();
     }
 }

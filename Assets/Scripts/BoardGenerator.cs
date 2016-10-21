@@ -26,9 +26,12 @@ public class BoardGenerator : MonoBehaviour {
     private int boardSizeZ;
     public float noSpawnRate = 0.0f;
     public BallControl ballInfo;
-    public Shader shader;
+    public ParticleManager particleSys;
     public PointLight pointLight;
-    
+    public Shader shader;
+    public Texture diffuseMap;
+    public Texture normalMap;
+
 
     private GameObject ball;
 
@@ -53,32 +56,47 @@ public class BoardGenerator : MonoBehaviour {
         wallArray = new bool[boardSizeX, boardSizeZ][];
         updateScore();
         generateMaze(boardSizeX, boardSizeZ);
-        
+
+        sendToShader();
         
     }
 	
 	// Update is called once per frame
 	void Update () {
 
+        resetOnComplete();
+
+        updateScore();
+
+        sendToShader();
+
+    }
+
+    void resetOnComplete() {
         if (completedMaze() || Input.GetKeyDown(KeyCode.R)) {
             if (complete) {
                 ballInfo.respawn();
-                ballInfo.addScore((boardSizeX+boardSizeZ)/2);
+                ballInfo.addScore((boardSizeX + boardSizeZ) / 2);
                 boardSizeX += aspectX;
                 boardSizeZ += aspectZ;
             }
-            
+
             generateMaze(boardSizeX, boardSizeZ);
 
+            particleSys.transform.localPosition = new Vector3(boardSizeX * 2 - 2, 0, -boardSizeZ * 2 + 2);
         }
-        updateScore();
+    }
 
+    void sendToShader() {
         foreach (GameObject component in components) {
             MeshRenderer componentRenderer = component.gameObject.GetComponent<MeshRenderer>();
 
             // Pass updated light positions to shader
             componentRenderer.material.SetColor("_PointLightColor", this.pointLight.color);
             componentRenderer.material.SetVector("_PointLightPosition", this.pointLight.GetWorldPosition());
+            componentRenderer.material.mainTexture = diffuseMap;
+            componentRenderer.material.SetTexture("_NormalMapTex", normalMap);
+
         }
     }
 
@@ -279,5 +297,21 @@ public class BoardGenerator : MonoBehaviour {
 
     public int getBoardZ() {
         return boardSizeZ;
+    }
+
+    public float getBoardMaxX() {
+        return boardSizeX * 2 - 1;
+    }
+
+    public float getBoardMaxY() {
+        return - boardSizeZ * 2 + 1;
+    }
+
+    public float getBoardMinX() {
+        return -1;
+    }
+
+    public float getBoardMinY() {
+        return 1;
     }
 }
