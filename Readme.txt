@@ -11,18 +11,19 @@ Submission Notes
 
   Key features
 + Keyboard/mouse input
-* accelerometer/touch input
++ accelerometer/touch input
 + Have a ball interact with the plane in the appropriate manner
 + Render a board with randomly placed walls with no texture
 + Properly implement DFS and have the walls placed accordingly
-* Textured and bump mapped rendering of the board and walls
-* Specular metallic rendering of the ball
++ Textured and bump mapped rendering of the board and walls
+- Specular metallic rendering of the ball
++ bump-map rendering of ball
 + Camera controls and ability to re-center on the ball
-* "Maze complete" state
++ "Maze complete" state
 + create a new maze
-* Game UI
-# place objectives around map to collect, otherwise game would be rather boring
-# place luminous orbs on the map to mark locations where the player has traversed
++ Game UI
+- place objectives around map to collect, otherwise game would be rather boring
+- place luminous orbs on the map to mark locations where the player has traversed
 
   Sub-key features
 - Glass refraction and place a glass plane on top of the box
