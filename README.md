@@ -40,6 +40,7 @@ The Specular aspects of the shader has a slower falloff than the diffuse aspects
 hence, some highlights will still be visible while it is not lighted strictly coloured. (this is intentional)
 Partly inspired by the subtle glow a player has in Dark Souls, 
 this also creates a situation where the player has to actually explore the maze rather than simply glancing at it for a solution.
+Also it was decided to not include any ambient ligthing in the main game to achieve this effect...
 
 The ball is shaded using a modified version of a phong shader and incorporates rim highlighting, 
 where the rims of highlights are coloured differently to the highlight itself,
