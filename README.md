@@ -1,6 +1,8 @@
 # Ass2
 Ass2
 
+- app certification inbound one day
+
 1) What the application does : 
 The application is a maze game, imagining the Surface tablet as the board, used to roll a ball around the board.
 Game doesn't fully mirror the behaviour of the Surface being a board,
