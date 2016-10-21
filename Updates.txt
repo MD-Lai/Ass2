@@ -22,20 +22,18 @@ Submission Notes
 + "Maze complete" state
 + create a new maze
 + Game UI
-- place objectives around map to collect, otherwise game would be rather boring
-- place luminous orbs on the map to mark locations where the player has traversed
 
   Sub-key features
 - Glass refraction and place a glass plane on top of the box
-* Cubemap reflection for ball
-* Reactive lighting (i.e. in game light proportional to light sensor)
-* Real time shadows 
-* Animated rearrangement of maze
-* Easter eggs and other ideas that pop up along the way
+- Cubemap reflection for ball (subsituted for bump mapping and rim shading for main ball)
+- Reactive lighting (i.e. in game light proportional to light sensor)
+- Real time shadows 
+- Animated rearrangement of maze
+- Easter eggs and other ideas that pop up along the way
 
   Summary
-  The foundations of the gameplay is set, and most interactive elements are complete 
-  or will be relatively quick to complete.
-  The presentation will be based on showing the base "gameplay" with no regard of the graphics component
-  just interaction. 
-  After the initial submission date, there will be no more submissions due and so it'll be 100% graphics 100% of the time.
++ The foundations of the gameplay is set, and most interactive elements are complete 
++ or will be relatively quick to complete.
++ The presentation will be based on showing the base "gameplay" with no regard of the graphics component
++ just interaction. 
++ After the initial submission date, there will be no more submissions due and so it'll be 100% graphics 100% of the time.
