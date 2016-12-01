@@ -31,6 +31,7 @@ public class BoardGenerator : MonoBehaviour {
     public Shader shader;
     public Texture diffuseMap;
     public Texture normalMap;
+    public Texture intensityMap;
 
 
     private GameObject ball;
@@ -54,7 +55,9 @@ public class BoardGenerator : MonoBehaviour {
         aspectX = Settings.xAspect;
         aspectZ = Settings.zAspect;
         wallArray = new bool[boardSizeX, boardSizeZ][];
+
         updateScore();
+
         generateMaze(boardSizeX, boardSizeZ);
 
         sendToShader();
@@ -96,6 +99,7 @@ public class BoardGenerator : MonoBehaviour {
             componentRenderer.material.SetVector("_PointLightPosition", this.pointLight.GetWorldPosition());
             componentRenderer.material.mainTexture = diffuseMap;
             componentRenderer.material.SetTexture("_NormalMapTex", normalMap);
+            componentRenderer.material.SetTexture("_IntensityTex", intensityMap);
 
         }
     }
@@ -209,7 +213,7 @@ public class BoardGenerator : MonoBehaviour {
         wallArray = new bool[boardSizeX, boardSizeZ][];
         clearMaze(boardX, boardZ);
         
-        explore(0, 0, boardX,boardZ);
+        explore((int)(Random.value * boardX), (int)(Random.value * boardZ), boardX, boardZ);
 
     }
 

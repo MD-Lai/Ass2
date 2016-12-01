@@ -47,6 +47,7 @@ Shader "MyShaders/PhongShader"
 
 			uniform sampler2D _MainTex;
 			uniform sampler2D _NormalMapTex;
+			uniform sampler2D _IntensityTex;
 
 			struct vertIn
 			{
@@ -98,6 +99,7 @@ Shader "MyShaders/PhongShader"
 			{
 				// Our interpolated normal might not be of length 1
 				float4 surfaceColor = tex2D(_MainTex, v.uv);
+				float specIntensity = tex2D(_IntensityTex, v.uv).r;
 
 				float3 bump = (tex2D(_NormalMapTex, v.uv) - float3(0.5, 0.5, 0.5)) * 2.0; //brings normal into range of -1 to 1
 				float3 bumpNormal = (bump.x * normalize(v.worldTangent)) +
@@ -129,7 +131,7 @@ Shader "MyShaders/PhongShader"
 
 				// Combine Phong illumination model components
 				float4 returnColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
-				returnColor.rgb = dif.rgb + spe.rgb;
+				returnColor.rgb = dif.rgb + spe.rgb * specIntensity;
 				
 				
 				returnColor.a = surfaceColor.a;
